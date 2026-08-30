@@ -7,15 +7,21 @@ const {
     getDelivery,
     getRiders,
     assignRider,
-    updateStatus
+    getAssignedDeliveries,
+    updateStatus,
+    getAdminSummary
 } = require("./services/deliveryService");
 
 const app = express();
 const PORT = 3000;
 
+
+// MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 
+
+// HEALTH CHECK
 app.get("/", (req, res) => {
     res.json({
         message: "Reflex MVP API is running"
@@ -47,6 +53,7 @@ app.post("/api/deliveries", (req, res) => {
         const delivery = createDelivery(req.body);
 
         res.status(201).json(delivery);
+
     } catch (error) {
         res.status(500).json({
             error: error.message
@@ -75,9 +82,35 @@ app.get("/api/deliveries/:id", (req, res) => {
 });
 
 
-// GET RIDERS
+// GET ALL RIDERS
 app.get("/api/riders", (req, res) => {
     res.json(getRiders());
+});
+
+// ADMIN SUMMARY
+app.get("/api/admin/summary", (req, res) => {
+    try {
+        res.json(getAdminSummary());
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+});
+// GET ASSIGNED DELIVERIES FOR A RIDER
+app.get("/api/riders/:riderId/deliveries", (req, res) => {
+    try {
+        const assignedDeliveries = getAssignedDeliveries(
+            req.params.riderId
+        );
+
+        res.json(assignedDeliveries);
+
+    } catch (error) {
+        res.status(404).json({
+            error: error.message
+        });
+    }
 });
 
 
@@ -98,6 +131,7 @@ app.post("/api/deliveries/:id/assign", (req, res) => {
         );
 
         res.json(delivery);
+
     } catch (error) {
         res.status(400).json({
             error: error.message
@@ -106,7 +140,7 @@ app.post("/api/deliveries/:id/assign", (req, res) => {
 });
 
 
-// UPDATE STATUS
+// UPDATE DELIVERY STATUS
 app.patch("/api/deliveries/:id/status", (req, res) => {
     try {
         const { status } = req.body;
@@ -123,6 +157,7 @@ app.patch("/api/deliveries/:id/status", (req, res) => {
         );
 
         res.json(delivery);
+
     } catch (error) {
         res.status(400).json({
             error: error.message
@@ -131,6 +166,24 @@ app.patch("/api/deliveries/:id/status", (req, res) => {
 });
 
 
+// ADMIN SUMMARY
+app.get("/api/admin/summary", (req, res) => {
+    try {
+        const summary = getAdminSummary();
+
+        res.json(summary);
+
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+});
+
+
+// START SERVER
 app.listen(PORT, () => {
-    console.log(`Reflex MVP API running on http://localhost:${PORT}`);
+    console.log(
+        `Reflex MVP API running on http://localhost:${PORT}`
+    );
 });
