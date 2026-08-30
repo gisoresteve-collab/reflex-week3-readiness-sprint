@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reflex Admin</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f4f6f8;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Reflex Admin Dashboard</h1>
+
+    <div class="stats">
+
+        <div class="card">
+            <div>Total</div>
+            <div class="number" id="total">0</div>
+        </div>
+
+        <div class="card">
+            <div>OPEN</div>
+            <div class="number" id="open">0</div>
+        </div>
+
+        <div class="card">
+            <div>ASSIGNED</div>
+            <div class="number" id="assigned">0</div>
+        </div>
+
+        <div class="card">
+            <div>PICKED UP</div>
+            <div class="number" id="pickedUp">0</div>
+        </div>
+
+        <div class="card">
+            <div>DELIVERED</div>
+            <div class="number" id="delivered">0</div>
+        </div>
+
+    </div>
+
+    <h2>Deliveries</h2>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Address</th>
+                <th>Rider</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody id="deliveryTable">
+        </tbody>
+
+    </table>
+
+    <script>
+
+        const API = "http://localhost:3000";
+
+        async function loadDashboard() {
+
+            const response =
+                await fetch(`${API}/api/deliveries`);
+
+            const deliveries =
+                await response.json();
+
+            document.getElementById("total").textContent =
+                deliveries.length;
+
+            document.getElementById("open").textContent =
+                deliveries.filter(d => d.status === "OPEN").length;
+
+            document.getElementById("assigned").textContent =
+                deliveries.filter(d => d.status === "ASSIGNED").length;
+
+            document.getElementById("pickedUp").textContent =
+                deliveries.filter(d => d.status === "PICKED_UP").length;
+
+            document.getElementById("delivered").textContent =
+                deliveries.filter(d => d.status === "DELIVERED").length;
+
+            const table =
+                document.getElementById("deliveryTable");
+
+            table.innerHTML = "";
+
+            deliveries.forEach(delivery => {
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${delivery.id}</td>
+                    <td>${delivery.customerName}</td>
+                    <td>${delivery.deliveryAddress}</td>
+                    <td>${delivery.assignedRider || "Not assigned"}</td>
+                    <td>${delivery.status}</td>
+                `;
+
+                table.appendChild(row);
+
+            });
+        }
+
+        loadDashboard();
+
+    </script>
+
+</body>
+</html>
