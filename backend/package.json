@@ -1,13 +1,19 @@
 {
-  "name": "reflex-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Reflex MVP backend",
+  "description": "Reflex MVP API",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "jest --runInBand --detectOpenHandles"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "qs": "^6.16.0",
+    "supertest": "^7.2.2"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
   }
 }
