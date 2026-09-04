@@ -13,7 +13,7 @@ const {
 } = require("./services/deliveryService");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 
 // MIDDLEWARE
@@ -182,8 +182,12 @@ app.get("/api/admin/summary", (req, res) => {
 
 
 // START SERVER
-app.listen(PORT, () => {
-    console.log(
-        `Reflex MVP API running on http://localhost:${PORT}`
-    );
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(
+            `Reflex MVP API running on http://localhost:${PORT}`
+        );
+    });
+}
+
+module.exports = app;
