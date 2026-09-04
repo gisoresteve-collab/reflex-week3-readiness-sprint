@@ -61,6 +61,13 @@ export async function fetchDeliveries() {
     return request("/deliveries");
 }
 
+export async function createDelivery(deliveryData) {
+    return request("/deliveries", {
+        method: "POST",
+        body: JSON.stringify(deliveryData)
+    });
+}
+
 export async function fetchRiders() {
     return request("/riders");
 }
