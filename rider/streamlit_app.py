@@ -5,9 +5,9 @@ from api import RiderAPI
 from styles import load_styles
 
 
-API_URL = os.getenv(
+API_URL = st.secrets.get(
     "REFLEX_API_URL",
-    "http://localhost:3000"
+    os.getenv("REFLEX_API_URL", "http://localhost:3000")
 )
 
 
